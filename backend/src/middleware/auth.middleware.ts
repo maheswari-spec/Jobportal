@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 import { config } from '../config/environment';
 import { AppError } from '../utils/errors';
 
@@ -26,7 +26,7 @@ export const protect = async (req: AuthenticatedRequest, res: Response, next: Ne
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as {
+    const decoded = jwt.verify(token, config.jwtSecret as Secret) as {
       id: string;
       email: string;
       role: 'candidate' | 'recruiter' | 'admin';

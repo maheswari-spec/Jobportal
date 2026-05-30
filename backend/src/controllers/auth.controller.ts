@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions, Secret } from 'jsonwebtoken';
 import { User } from '../models/user.model';
 import { CandidateProfile } from '../models/candidate.model';
 import { RecruiterProfile } from '../models/recruiter.model';
@@ -9,11 +9,13 @@ import { hashPassword, verifyPassword } from '../utils/hash';
 import { admin } from '../config/firebase';
 
 const signAccessToken = (payload: any) => {
-  return jwt.sign(payload, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+  const options: SignOptions = { expiresIn: config.jwtExpiresIn as unknown as SignOptions['expiresIn'] };
+  return jwt.sign(payload, config.jwtSecret as Secret, options);
 };
 
 const signRefreshToken = (payload: any) => {
-  return jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: config.jwtRefreshExpiresIn });
+  const options: SignOptions = { expiresIn: config.jwtRefreshExpiresIn as unknown as SignOptions['expiresIn'] };
+  return jwt.sign(payload, config.jwtRefreshSecret as Secret, options);
 };
 
 const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
@@ -190,7 +192,7 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
       return next(new AppError('Refresh token is required', 400));
     }
 
-    const decoded = jwt.verify(refreshToken, config.jwtRefreshSecret) as {
+    const decoded = jwt.verify(refreshToken, config.jwtRefreshSecret as Secret) as {
       id: string;
       email: string;
       role: string;
