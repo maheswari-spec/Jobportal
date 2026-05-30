@@ -51,7 +51,7 @@ export const Chat = () => {
       setChats([data, ...chats.filter((chat) => chat._id !== data._id)]);
       setActiveChat(data);
       setChatError('');
-      queryClient.invalidateQueries(['chatsList']);
+      queryClient.invalidateQueries({ queryKey: ['chatsList'] });
     },
     onError: (error: any) => {
       setChatError(error?.message || 'Unable to start chat.');

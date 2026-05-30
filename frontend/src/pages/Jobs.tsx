@@ -68,7 +68,7 @@ export const Jobs = () => {
     },
     onSuccess: async () => {
       setApplySuccess(true);
-      await queryClient.invalidateQueries(['myApplications']);
+      await queryClient.invalidateQueries({ queryKey: ['myApplications'] });
       setTimeout(() => {
         setApplySuccess(false);
         setApplyModalOpen(false);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/authStore';
-import { User, Phone, MapPin, CheckCircle, Plus, Trash } from 'lucide-react';
+import { User, Phone, CheckCircle, Plus, Trash } from 'lucide-react';
 
 export const Profile = () => {
   const user = useAuthStore((state) => state.user);

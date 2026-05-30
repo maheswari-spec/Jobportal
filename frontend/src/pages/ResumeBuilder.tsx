@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '../services/api';
-import { Sparkles, FileText, Check } from 'lucide-react';
+import { Sparkles, FileText, Check, Printer } from 'lucide-react';
 
 export const ResumeBuilder = () => {
   const [selectedResumeId, setSelectedResumeId] = useState('');
