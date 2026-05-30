@@ -7,30 +7,61 @@ import { AppError } from './utils/errors';
 
 const app = express();
 
-// Base Middlewares
-const clientOrigins = [process.env.CLIENT_URL || 'http://localhost:3000', 'http://localhost:3001'];
-app.use(cors({
-  origin: clientOrigins,
-  credentials: true,
-}));
+// Allowed Origins
+const clientOrigins = [
+  process.env.CLIENT_URL,
+  'https://jobportal-smoky-two.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:3001',
+].filter(Boolean) as string[];
+
+// CORS Configuration
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (Postman, mobile apps, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (clientOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  })
+);
+
+// Body Parsers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// Health check endpoint
+// Health Check
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date() });
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date(),
+  });
 });
 
-// Register API Routes
+// API Routes
 app.use('/api/v1', apiRoutes);
 
-// Wildcard API Route Error
+// 404 Handler
 app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(
+    new AppError(
+      `Can't find ${req.originalUrl} on this server!`,
+      404
+    )
+  );
 });
 
-// Error handling Middleware
+// Global Error Handler
 app.use(globalErrorHandler);
 
 export default app;
